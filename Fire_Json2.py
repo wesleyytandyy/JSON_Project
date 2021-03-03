@@ -1,0 +1,43 @@
+import json
+
+infile = open("US_fires_9_14.json", "r")
+outfile = open("readable_fire_data2.json", "w")
+
+fire_data = json.load(infile)
+
+json.dump(fire_data, outfile, indent=4)
+
+
+datalons, datalats, databright = [], [], []
+for x in fire_data:
+    lon = x["longitude"]
+    lat = x["latitude"]
+    bright = x["brightness"]
+    if bright > 450:
+        databright.append(bright)
+        datalons.append(lon)
+        datalats.append(lat)
+
+
+from plotly.graph_objs import Scattergeo, Layout
+from plotly import offline
+
+data = [
+    {
+        "type": "scattergeo",
+        "lon": datalons,
+        "lat": datalats,
+        "marker": {
+            "size": [0.05 * bright for bright in databright],
+            "color": databright,
+            "colorscale": "viridis",
+            "reversescale": True,
+            "colorbar": {"title": "Brightness"},
+        },
+    }
+]
+
+my_layout = Layout(title="US Fire - 9/14/2020 through 9/20/2020")
+fig = {"data": data, "layout": my_layout}
+
+offline.plot(fig, filename="fire_2.html")

@@ -12,10 +12,10 @@ for x in fire_data:
     lon = x["longitude"]
     lat = x["latitude"]
     bright = x["brightness"]
-    datalons.append(lon)
-    datalats.append(lat)
     if bright > 450:
         databright.append(bright)
+        datalons.append(lon)
+        datalats.append(lat)
 
 
 from plotly.graph_objs import Scattergeo, Layout
